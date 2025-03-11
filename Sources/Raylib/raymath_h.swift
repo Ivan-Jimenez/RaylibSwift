@@ -33,6 +33,18 @@ public extension Raylib {
     static func remap(_ value: Float, _ inputStart: Float, _ inputEnd: Float, _ outputStart: Float, _ outputEnd: Float) -> Float {
         return RaylibC.Remap(value, inputStart, inputEnd, outputStart, outputEnd)
     }
+
+    /// Wrap input value from min to max
+    @inlinable
+    static func wrap(_ value: Float, _ min: Float, _ max: Float) -> Float {
+        return RaylibC.Wrap(value, min, max)
+    }
+
+    /// Check whether two given floats are almost equal
+    @inlinable
+    static func FloatEquals(_ x: Float, _ y: Float) -> Int32 {
+        return RaylibC.FloatEquals(x, y)
+    }
 }
 
 //MARK: - Module Functions Definition - Vector2 math
@@ -96,11 +108,25 @@ public extension Vector2 {
     func distance(_ v2: Vector2) -> Float {
         return RaylibC.Vector2Distance(self, v2)
     }
+
+    // Calculate square distance between two vectors
+    @inlinable
+    func distanceSqr(_ v2: Vector2) -> Float {
+        return RaylibC.Vector2DistanceSqr(self, v2)
+    }
     
     /// Calculate angle from two vectors in X-axis
     @inlinable
     func angle(_ v2: Vector2) -> Float {
         return RaylibC.Vector2Angle(self, v2)
+    }
+
+    /// Calculate angle defined by a two vectors line
+    /// NOTE: Parameters need to be normalized
+    /// Current implementation should be aligned with glm::angle
+    @inlinable
+    func lineAngle(_ end: Vector2) -> Float {
+        return RaylibC.Vector2LineAngle(self, end)
     }
     
     /// Scale vector (multiply by value)
@@ -132,6 +158,12 @@ public extension Vector2 {
     func normalized() -> Vector2 {
         return RaylibC.Vector2Normalize(self)
     }
+
+    /// Transforms a Vector2 by a given Matrix
+    @inlinable
+    func transform(_ mat: Matrix) -> Vector2 {
+        return RaylibC.Vector2Transform(self, mat)
+    }
     
     /// Calculate linear interpolation between two vectors
     @inlinable
@@ -144,6 +176,18 @@ public extension Vector2 {
     func reflect(_ normal: Vector2) -> Vector2 {
         return RaylibC.Vector2Reflect(self, normal)
     }
+
+    /// Get min value for each pair of components
+    @inlinable
+    func min(_ v2: Vector2) -> Vector2 {
+        return RaylibC.Vector2Min(self, v2)
+    }
+
+    /// Get max value for each pair of components
+    @inlinable
+    func max(_ v2: Vector2) -> Vector2 {
+        return RaylibC.Vector2Max(self, v2)
+    }
     
     /// Rotate Vector by float in Degrees.
     @inlinable
@@ -155,6 +199,41 @@ public extension Vector2 {
     @inlinable
     func moveTowards(_ target: Vector2, _ maxDistance: Float) -> Vector2 {
         return RaylibC.Vector2MoveTowards(self, target, maxDistance)
+    }
+
+    /// Invert the given vector
+    @inlinable
+    var invert: Vector2 {
+        return RaylibC.Vector2Invert(self)
+    }
+
+    /// Clamp the components of the vector between
+    /// min and max values specified by the given vectors
+    @inlinable
+    func clamp(_ min: Vector2, _ max: Vector2) -> Vector2 {
+        return RaylibC.Vector2Clamp(self, min, max)
+    }
+
+    /// Clamp the magnitude of the vector between two min and max values
+    @inlinable
+    func clampValue(_ min: Float, max: Float) -> Vector2 {
+        return RaylibC.Vector2ClampValue(self, min, max)
+    }
+
+    /// Check whether two given vectors are almost equal
+    @inlinable
+    func equals(_ q: Vector2) -> Int32 {
+        RaylibC.Vector2Equals(self, q)
+    }
+
+    /// Compute the direction of a refracted ray
+    /// - Parameters:
+    ///   - n: normalized normal vector of the interface of two optical media
+    ///   - r: ratio of the refractive index of the medium from where the ray comes
+    ///        to the refractive index of the medium on the other side of the surface
+    @inlinable
+    func refract(_ n: Vector2, _ r: Float) -> Vector2 {
+        return RaylibC.Vector2Refract(self, n, r)
     }
 }
 
@@ -244,6 +323,18 @@ public extension Vector3 {
     func distance(_ v2: Vector3) -> Float {
         return RaylibC.Vector3Distance(self, v2)
     }
+
+    /// Calculate square distance between two vectors
+    @inlinable
+    func distanceSqr(_ v2: Vector3) -> Float {
+        return RaylibC.Vector3DistanceSqr(self, v2)
+    }
+
+    /// Calculate angle between two vectors
+    @inlinable
+    func angle(_ v2: Vector3) -> Float {
+        return RaylibC.Vector3Angle(self, v2)
+    }
     
     // Negate provided vector (invert direction)
     @inlinable
@@ -261,6 +352,18 @@ public extension Vector3 {
     @inlinable
     var normalized: Vector3 {
         return RaylibC.Vector3Normalize(self)
+    }
+
+    /// Calculate the projection of the vector v1 on to v2
+    @inlinable
+    func project(_ v2: Vector3) -> Vector3 {
+        return RaylibC.Vector3Project(self, v2)
+    }
+
+    /// Calculate the rejection of the vector v1 on to v2
+    @inlinable
+    func reject(_ v2: Vector3) -> Vector3 {
+        return RaylibC.Vector3Reject(self, v2)
     }
 }
 public extension Raylib {
@@ -284,11 +387,30 @@ public extension Vector3 {
     func rotate(by q: Quaternion) -> Vector3 {
         return RaylibC.Vector3RotateByQuaternion(self, q)
     }
+
+    /// Rotates a vector around an axis
+    @inlinable
+    func rotate(by axis: Vector3, _ angle: Float) -> Vector3 {
+        return RaylibC.Vector3RotateByAxisAngle(self, axis, angle)
+    }
+
+    /// Move Vector towards target
+    @inlinable
+    func moveTowards(_ target: Vector3, _ maxDistance: Float) -> Vector3 {
+        return RaylibC.Vector3MoveTowards(self, target, maxDistance)
+    }
     
     /// Calculate linear interpolation between two vectors
     @inlinable
     func lerp(_ v2: Vector3, _ amount: Float) -> Vector3 {
         return RaylibC.Vector3Lerp(self, v2, amount)
+    }
+
+    /// Calculate cubic hermite interpolation between two vectors and their tangents
+    /// as described in the GLTF 2.0 specification: https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#interpolation-cubic
+    @inlinable
+    func cubicHermite(_ tangent1: Vector3, _ v2: Vector3, _ tangent2: Vector3, _ amount: Float) -> Vector3 {
+        return RaylibC.Vector3CubicHermite(self, tangent1, v2, tangent2, amount)
     }
     
     /// Calculate reflected vector to normal
@@ -325,6 +447,41 @@ public extension Vector3 {
     func toFloatV() -> float3 {
         return RaylibC.Vector3ToFloatV(self)
     }
+
+    /// Invert the given vector
+    @inlinable
+    var invert: Vector3 {
+        return RaylibC.Vector3Invert(self)
+    }
+
+    /// Clamp the components of the vector between
+    /// min and max values specified by the given vectors
+    @inlinable
+    func clamp(_ min: Vector3, _ max: Vector3) -> Vector3 {
+        return RaylibC.Vector3Clamp(self, min, max)
+    }
+
+    /// Clamp the magnitude of the vector between two values
+    @inlinable
+    func clampValue(_ min: Float, _ max: Float) -> Vector3 {
+        return RaylibC.Vector3ClampValue(self, min, max)
+    }
+
+    /// Check whether two given vectors are almost equal
+    @inlinable
+    func equals(_ v2: Vector3) -> Int32 {
+        return RaylibC.Vector3Equals(self, v2)
+    }
+
+    /// Compute the direction of a refracted ray
+    /// - Parameters: 
+    ///   - n: normalized normal vector of the interface of two optical media
+    ///   - r: ratio of the refractive index of the medium from where the ray comes
+    ///        to the refractive index of the medium on the other side of the surface
+    @inlinable
+    func refract(_ n: Vector3, _ r: Float) -> Vector3 {
+        return RaylibC.Vector3Refract(self, n, r)
+    }
 }
 
 //MARK: - Module Functions Definition - Matrix math
@@ -359,11 +516,12 @@ public extension Matrix {
     
     // Calculate the invert determinant (inlined to avoid double-caching)
     
+    // TODO: Deprecated
     /// Normalize provided matrix
-    @inlinable
-    var normalized: Matrix {
-        return RaylibC.MatrixNormalize(self)
-    }
+    // @inlinable
+    // var normalized: Matrix {
+    //     return RaylibC.MatrixNormalize(self)
+    // }
     
     /// Returns identity matrix
     @inlinable
@@ -556,6 +714,13 @@ public extension Quaternion {
     func sLerp(_ q1: Quaternion, _ q2: Quaternion, _ amount: Float) -> Quaternion {
         return RaylibC.QuaternionSlerp(self, q2, amount)
     }
+
+    /// Calculate quaternion cubic spline interpolation using Cubic Hermite Spline algorithm
+    /// as described in the GLTF 2.0 specification: https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#interpolation-cubic
+    @inlinable
+    func cubicHermiteSpline(_ outTangent1: Quaternion, _ q2: Quaternion, _ inTangent2: Quaternion, _ t: Float) -> Quaternion {
+        return RaylibC.QuaternionCubicHermiteSpline(self, outTangent1, q2, inTangent2, t)
+    }
     
     /// Calculate quaternion based on the rotation from one vector to another
     @inlinable
@@ -616,6 +781,12 @@ public extension Quaternion {
     @inlinable
     func transform(_ mat: Matrix) -> Quaternion {
         return RaylibC.QuaternionTransform(self, mat)
+    }
+
+    /// Check whether two given quaternions are almost equal
+    @inlinable
+    func equals(_ q: Quaternion) -> Int32 {
+        return RaylibC.QuaternionEquals(self, q)
     }
 }
 

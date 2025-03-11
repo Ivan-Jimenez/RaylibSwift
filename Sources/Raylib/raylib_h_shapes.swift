@@ -18,7 +18,19 @@ public extension Raylib {
     static func setShapesTexture(_ texture: Texture2D, _ source: Rectangle) {
         RaylibC.SetShapesTexture(texture, source)
     }
-    
+
+    /// Get texture that is used for shapes drawing
+    @inlinable
+    static func getShapesTexture() -> Texture2D {
+        return RaylibC.GetShapesTexture()
+    }
+
+    /// Get texture source rectangle that is used for shapes drawing
+    @inlinable
+    static func getShapesTextureRectangle() -> Rectangle {
+        return RaylibC.GetShapesTextureRectangle()
+    }
+
     //MARK: - Basic shapes drawing functions
     
     /// Draw a pixel
@@ -57,16 +69,18 @@ public extension Raylib {
         RaylibC.DrawLineBezier(startPos, endPos, thick, color)
     }
     
+    // TODO: Deprecated
     /// Draw line using quadratic bezier curves with a control point
     @inlinable
     static func drawLineBezierQuad(_ startPos: Vector2, _ endPos: Vector2, _ controlPos: Vector2, _ thick: Float, _ color: Color) {
-        RaylibC.DrawLineBezierQuad(startPos, endPos, controlPos, thick, color)
+        // RaylibC.DrawLineBezierQuad(startPos, endPos, controlPos, thick, color)
     }
     
+    // TODO: Deprecated
     /// Draw line using cubic bezier curves with 2 control points
     @inlinable
     static func drawLineBezierCubic(_ startPos: Vector2, _ endPos: Vector2, _ startControlPos: Vector2, _ endControlPos: Vector2, _ thick: Float, _ color: Color) {
-        RaylibC.DrawLineBezierCubic(startPos, endPos, startControlPos, endControlPos, thick, color)
+        // RaylibC.DrawLineBezierCubic(startPos, endPos, startControlPos, endControlPos, thick, color)
     }
     
     /// Draw lines sequence
@@ -112,6 +126,12 @@ public extension Raylib {
     @inlinable
     static func drawCircleLines(_ centerX: Int32, _ centerY: Int32, _ radius: Float, _ color: Color) {
         RaylibC.DrawCircleLines(centerX, centerY, radius, color)
+    }
+
+    /// Draw circle outline (Vector version)
+    @inlinable
+    static func drawCircleLinesV(_ center: Vector2, _ radius: Float, _ color: Color) {
+        RaylibC.DrawCircleLinesV(center, radius, color)
     }
     
     /// Draw ellipse
@@ -198,10 +218,23 @@ public extension Raylib {
         RaylibC.DrawRectangleRounded(rec, roundness, segments, color)
     }
     
+    // TODO: Deprecated
     /// Draw rectangle with rounded edges outline
     @inlinable
     static func drawRectangleRoundedLines(_ rec: Rectangle, _ roundness: Float, _ segments: Int32, _ lineThick: Float, _ color: Color) {
-        RaylibC.DrawRectangleRoundedLines(rec, roundness, segments, lineThick, color)
+        RaylibC.DrawRectangleRoundedLinesEx(rec, roundness, segments, lineThick, color)
+    }
+
+    /// Draw rectangle lines with rounded edges
+    @inlinable
+    static func drawRectangleRoundedLines(_ rec: Rectangle, _ roundness: Float, _ segments: Int32, _ color: Color) {
+        RaylibC.DrawRectangleRoundedLines(rec, roundness, segments, color)
+    }
+
+    /// Draw rectangle with rounded edges outline
+    @inlinable
+    static func drawRectangleRoundedLinesEx(_ rec: Rectangle, _ roundness: Float, _ segments: Int32, _ lineThick: Float, _ color: Color) {
+        RaylibC.DrawRectangleRoundedLinesEx(rec, roundness, segments, lineThick, color)
     }
     
     /// Draw a color-filled triangle (vertex in counter-clockwise order!)
@@ -254,6 +287,110 @@ public extension Raylib {
 }
 
 
+// MARK: - Splines drawing functions
+public extension Raylib {
+    // Draw spline: Linear, minimum 2 points
+    @inlinable
+    static func drawSplineLinear(_ points: [Vector2], _ pointCount: Int32, _ thick: Float, _ color: Color) {
+        var _points = points
+        RaylibC.DrawSplineLinear(&_points, pointCount, thick, color)
+    }
+
+    /// Draw spline: B-Spline, minimum 4 points
+    @inlinable
+    static func drawSplineBasis(_ points: [Vector2], _ pointCount: Int32, _ thick: Float, _ color: Color) {
+        var _points = points
+        RaylibC.DrawSplineBasis(&_points, pointCount, thick, color)
+    }
+
+    /// Draw spline: Catmull-Rom, minimum 4 points
+    @inlinable
+    static func drawSplineCatmullRom(_ points: [Vector2], _ pointCount: Int32, _ thick: Float, _ color: Color) {
+        var _points = points
+        RaylibC.DrawSplineCatmullRom(&_points, pointCount, thick, color)
+    }
+
+    /// Draw spline: Quadratic Bezier, minimum 3 points (1 control point): [p1, c2, p3, c4...]
+    @inlinable
+    static func drawSplineBezierQuadratic(_ points: [Vector2], _ pointCount: Int32, _ thick: Float, _ color: Color) {
+        var _points = points
+        RaylibC.DrawSplineBezierQuadratic(&_points, pointCount, thick, color)
+    }
+
+    /// Draw spline: Cubic Bezier, minimum 4 points (2 control points): [p1, c2, c3, p4, c5, c6...]
+    @inlinable
+    static func drawSplineBezierCubic(_ points: [Vector2], _ pointCount: Int32, _ thick: Float, _ color: Color) {
+        var _points = points
+        RaylibC.DrawSplineBezierCubic(&_points, pointCount, thick, color)
+    }
+
+    /// Draw spline segment: Linear, 2 points
+    @inlinable
+    static func drawSplineSegmentLinear(_ p1: Vector2, _ p2: Vector2, _ thick: Float, _ color: Color) {
+        RaylibC.DrawSplineSegmentLinear(p1, p2, thick, color)
+    }
+
+    /// Draw spline segment: B-Spline, 4 points
+    @inlinable
+    static func drawSplineSegmentBasis(_ p1: Vector2, _ p2: Vector2, _ p3: Vector2, _ p4: Vector2, _ thick: Float, _ color: Color) {
+        RaylibC.DrawSplineSegmentBasis(p1, p2, p3, p4, thick, color)
+    }
+
+
+    /// Draw spline segment: Catmull-Rom, 4 points
+    @inlinable 
+    static func drawSplineSegmentCatmullRom(_ p1: Vector2, _ p2: Vector2, _ p3: Vector2, _ p4: Vector2, _ thick: Float, _ color: Color) {
+        RaylibC.DrawSplineSegmentCatmullRom(p1, p2, p3, p4, thick, color)
+    }
+
+    /// Draw spline segment: Quadratic Bezier, 2 points, 1 control point
+    @inlinable
+    static func drawSplineSegmentBezierQuadratic(_ p1: Vector2, _ c2: Vector2, _ p3: Vector2, _ thick: Float, _ color: Color) {
+        RaylibC.DrawSplineSegmentBezierQuadratic(p1, c2, p3, thick, color)
+    }
+
+    /// Draw spline segment: Cubic Bezier, 2 points, 2 control points
+    @inlinable
+    static func drawSplineSegmentBezierCubic(_ p1: Vector2, _ c2: Vector2, _ c3: Vector2, _ p4: Vector2, _ thick: Float, _ color: Color) {
+        RaylibC.DrawSplineSegmentBezierCubic(p1, c2, c3, p4, thick, color)
+    }
+}
+
+
+// MARK: - Spline segment point evaluation functions, for a given t [0.0f .. 1.0f]
+public extension Raylib {
+    /// Get (evaluate) spline point: Linear
+    @inlinable
+    static func getSplinePointLinear(_ startPos: Vector2, _ endPos: Vector2, _ t: Float) -> Vector2 {
+        return RaylibC.GetSplinePointLinear(startPos, endPos, t)
+    }
+    
+    /// Get (evaluate) spline point: B-Spline
+    @inlinable
+    static func getSplinePointBasis(_ p1: Vector2, _ p2: Vector2, _ p3: Vector2, _ p4: Vector2, _ t: Float) -> Vector2 {
+        return RaylibC.GetSplinePointBasis(p1, p2, p3, p4, t)
+    }
+
+    /// Get (evaluate) spline point: Catmull-Rom
+    @inlinable
+    static func getSplinePointCatmullRom(_ p1: Vector2, _ p2: Vector2, _ p3: Vector2, _ p4: Vector2, _ t: Float) -> Vector2 {
+        return RaylibC.GetSplinePointCatmullRom(p1, p2, p3, p4, t)
+    }
+
+    /// Get (evaluate) spline point: Quadratic Bezier
+    @inlinable
+    static func getSplinePointBezierQuad(_ p1: Vector2, _ c2: Vector2, _ p3: Vector2, _ t: Float) -> Vector2 {
+        return RaylibC.GetSplinePointBezierQuad(p1, c2, p3, t)
+    }
+
+    /// Get (evaluate) spline point: Cubic Bezier
+    @inlinable
+    static func getSplinePointBezierCubic(_ p1: Vector2, _ c2: Vector2, _ c3: Vector2, _ p4: Vector2, _ t: Float) -> Vector2 {
+        return RaylibC.GetSplinePointBezierCubic(p1, c2, c3, p4, t)
+    }
+}
+
+
 //MARK: - Basic shapes collision detection functions
 public extension Raylib {
     /// Check collision between two rectangles
@@ -282,6 +419,17 @@ public extension Raylib {
     @inlinable
     static func checkCollisionCircleRec(_ center: Vector2, _ radius: Float, _ rec: Rectangle) -> Bool {
         let result = RaylibC.CheckCollisionCircleRec(center, radius, rec)
+#if os(Windows)
+        return result.rawValue != 0
+#else
+        return result
+#endif
+    }
+
+    // Check if circle collides with a line created betweeen two points [p1] and [p2]
+    @inlinable
+    static func checkCollisionCircleLine(_ center: Vector2, _ radius: Float, _ p1: Vector2, _ p2: Vector2) -> Bool {
+        let result = RaylibC.CheckCollisionCircleLine(center, radius, p1, p2)
 #if os(Windows)
         return result.rawValue != 0
 #else
@@ -343,6 +491,18 @@ public extension Raylib {
     @inlinable
     static func checkCollisionPointLine(_ point: Vector2, _ p1: Vector2, _ p2: Vector2, _ threshold: Int32) -> Bool {
         let result = RaylibC.CheckCollisionPointLine(point, p1, p2, threshold)
+#if os(Windows)
+        return result.rawValue != 0
+#else
+        return result
+#endif
+    }
+
+    /// Check if point is within a polygon described by array of vertices
+    @inlinable
+    static func checkCollisionPointPoly(_ point: Vector2, _ points: [Vector2], _ pointCount: Int32) -> Bool {
+        var _points = points
+        let result = RaylibC.CheckCollisionPointPoly(point, &_points, pointCount)
 #if os(Windows)
         return result.rawValue != 0
 #else

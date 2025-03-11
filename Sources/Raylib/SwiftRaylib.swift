@@ -123,6 +123,12 @@ import RaylibC
 // VR Stereo rendering configuration for simulator
 @_exported import struct RaylibC.VrStereoConfig
 
+// File path list
+@_exported import struct RaylibC.FilePathList
+
+/// Automation event list
+@_exported import struct RaylibC.AutomationEventList
+
 #if canImport(Foundation)
 @_exported import struct Foundation.URL
 @_exported import class Foundation.Bundle

@@ -70,16 +70,18 @@ public extension Raylib {
         RaylibC.DrawCubeWiresV(position, size, color)
     }
     
+    // TODO: Deprecated https://www.raylib.com/examples/models/loader.html?name=models_draw_cube_texture
     /// Draw cube textured
     @inlinable
     static func drawCubeTexture(_ texture: Texture2D, _ position: Vector3, _ width: Float, _ height: Float, _ length: Float, _ color: Color) {
-        RaylibC.DrawCubeTexture(texture, position, width, height, length, color)
+        // RaylibC.DrawCubeTexture(texture, position, width, height, length, color)
     }
     
+    // TODO: Deprecated
     /// Draw cube with a region of a texture
     @inlinable
     static func drawCubeTextureRec(_ texture: Texture2D, _ source: Rectangle, _ position: Vector3, _ width: Float, _ height: Float, _ length: Float, _ color: Color) {
-        RaylibC.DrawCubeTextureRec(texture, source, position, width, height, length, color)
+        // RaylibC.DrawCubeTextureRec(texture, source, position, width, height, length, color)
     }
     
     /// Draw sphere
@@ -122,6 +124,18 @@ public extension Raylib {
     @inlinable
     static func drawCylinderWiresEx(_ startPos: Vector3, _ endPos: Vector3, _ startRadius: Float, _ endRadius: Float, _ sides: Int32, _ color: Color) {
         RaylibC.DrawCylinderWiresEx(startPos, endPos, startRadius, endRadius, sides, color)
+    }
+
+    /// Draw a capsule with the center of its sphere caps at startPos and endPos
+    @inlinable
+    static func drawCapsule(_ startPos: Vector3, _ endPos: Vector3, _ radius: Float, _ slices: Int32, _ rings: Int32, _ color: Color) {
+        RaylibC.DrawCapsule(startPos, endPos, radius, slices, rings, color)
+    }
+
+    /// Draw capsule wireframe with the center of its sphere caps at startPos and endPos
+    @inlinable
+    static func drawCapsuleWires(_ startPos: Vector3, _ endPos: Vector3, _ radius: Float, _ slices: Int32, _ rings: Int32, _ color: Color) {
+        RaylibC.DrawCapsuleWires(startPos, endPos, radius, slices, rings, color)
     }
     
     /// Draw a plane XZ
@@ -168,10 +182,11 @@ public extension Raylib {
         RaylibC.UnloadModel(model)
     }
     
+    // TODO: Deprecated
     /// Unload model (but not meshes) from memory (RAM and/or VRAM)
     @inlinable
     static func unloadModelKeepMeshes(_ model: Model) {
-        RaylibC.UnloadModelKeepMeshes(model)
+        // RaylibC.UnloadModelKeepMeshes(model)
     }
     
     /// Compute model bounding box limits (considers all meshes)
@@ -206,6 +221,19 @@ public extension Raylib {
     static func drawModelWiresEx(_ model: Model, _ position: Vector3, _ rotationAxis: Vector3, _ rotationAngle: Float, _ scale: Vector3, _ tint: Color) {
         RaylibC.DrawModelWiresEx(model, position, rotationAxis, rotationAngle, scale, tint)
     }
+
+    /// Draw a model as points
+    @inlinable
+    static func drawModelPoints(_ model: Model, _ position: Vector3, _ scale: Float, _ tint: Color) {
+        RaylibC.DrawModelPoints(model, position, scale, tint)
+    }
+
+    /// Draw a model as points with extended parameters
+    @inlinable
+    static func drawModelPointsEx(_ model: Model, _ position: Vector3, _ rotationAxis: Vector3, _ rotationAngle: Float, _ scale: Vector3, _ tint: Color) {
+        RaylibC.DrawModelPointsEx(model, position, rotationAxis, rotationAngle, scale, tint)
+    }
+
     
     /// Draw bounding box (wires)
     @inlinable
@@ -280,6 +308,17 @@ public extension Raylib {
 #endif
         }
     }
+
+    /// Export mesh as code file (.h) defining multiple arrays of vertex attributes
+    @inlinable
+    static func exportMeshAsCode(_ mesh: Mesh, _ fileName: String) -> Bool {
+        let result = RaylibC.ExportMeshAsCode(mesh, fileName)
+#if os(Windows)
+        return result.rawValue != 0
+#else
+        return result
+#endif
+    }
     
     /// Compute mesh bounding box limits
     @inlinable
@@ -293,10 +332,11 @@ public extension Raylib {
         RaylibC.GenMeshTangents(&mesh)
     }
     
+    // TODO: Deprecated
     /// Compute mesh binormals
     @inlinable
     static func genMeshBinormals(_ mesh: inout Mesh) {
-        RaylibC.GenMeshBinormals(&mesh)
+        // RaylibC.GenMeshBinormals(&mesh)
     }
 }
 
@@ -388,6 +428,17 @@ public extension Raylib {
     static func loadMaterialDefault() -> Material {
         return RaylibC.LoadMaterialDefault()
     }
+
+    /// Check if a material is valid (shader assigned, map textures loaded in GPU)
+    @inlinable
+    static func isMaterialValid(_ material: Material) -> Bool {
+        let result = RaylibC.IsMaterialValid(material)
+#if os(Windows)
+        return result.rawValue != 0
+#else
+        return result
+#endif
+    }
     
     /// Unload material from GPU memory (VRAM)
     @inlinable
@@ -426,7 +477,13 @@ public extension Raylib {
     static func updateModelAnimation(_ model: Model, _ anim: ModelAnimation, _ frame: Int32) {
         RaylibC.UpdateModelAnimation(model, anim, frame)
     }
-    
+
+    /// Update model animation mesh bone matrices (GPU skinning)
+    @inlinable
+    static func updateModelAnimationBones(_ model: Model, _ anim: ModelAnimation, frame: Int32) {
+        RaylibC.UpdateModelAnimationBones(model, anim, frame)
+    }
+
     /// Unload animation data
     @inlinable
     static func unloadModelAnimation(_ anim: ModelAnimation) {
@@ -437,7 +494,7 @@ public extension Raylib {
     @inlinable
     static func unloadModelAnimations(_ animations: [ModelAnimation]) {
         var _animations = animations
-        RaylibC.UnloadModelAnimations(&_animations, UInt32(_animations.count))
+        RaylibC.UnloadModelAnimations(&_animations, Int32(_animations.count))
     }
     
     /// Check model animation skeleton match
@@ -499,11 +556,12 @@ public extension Raylib {
         return RaylibC.GetRayCollisionBox(ray, box)
     }
     
+    // TODO: Deprecated
     /// Get collision info between ray and model
-    @inlinable
-    static func getRayCollisionModel(_ ray: Ray, _ model: Model) -> RayCollision {
-        return RaylibC.GetRayCollisionModel(ray, model)
-    }
+    // @inlinable
+    // static func getRayCollisionModel(_ ray: Ray, _ model: Model) -> RayCollision {
+        // return RaylibC.GetRayCollisionModel(ray, model)
+    // }
     
     /// Get collision info between ray and mesh
     @inlinable

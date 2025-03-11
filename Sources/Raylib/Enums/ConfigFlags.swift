@@ -9,7 +9,7 @@
 // System/Window config flags
 // NOTE: Every bit registers one state (use it with bit masks)
 // By default all flags are set to 0
-public struct ConfigFlags: OptionSet, Equatable, RawRepresentable {
+public struct ConfigFlags: OptionSet, Equatable, RawRepresentable, Sendable {
     public let rawValue: UInt32
     
     /// Set to try enabling V-Sync on GPU

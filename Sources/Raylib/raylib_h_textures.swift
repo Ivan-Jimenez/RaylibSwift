@@ -57,6 +57,17 @@ public extension Raylib {
     static func loadImageFromScreen() -> Image {
         return RaylibC.LoadImageFromScreen()
     }
+
+    /// Check if an image is valid (data and parameters)
+    @inlinable
+    static func isImageValid(_ image: Image) -> Bool {
+        let result = RaylibC.IsImageValid(image)
+#if os(Windows)
+        return result.rawValue != 0
+#else 
+        return result
+#endif
+    }
     
     /// Unload image from CPU memory (RAM)
     @inlinable
@@ -75,6 +86,12 @@ public extension Raylib {
             return result
 #endif
         }
+    }
+    
+    /// Export image to memory buffer
+    @inlinable
+    static func exportImageToMemory(_ image: Image, _ fileType: String, _ fileSize: inout Int32) -> UnsafeMutablePointer<UInt8>! {
+        return RaylibC.ExportImageToMemory(image, fileType, &fileSize)
     }
     
     /// Export image as code file defining an array of bytes, returns true on success
@@ -100,17 +117,25 @@ public extension Raylib {
         return RaylibC.GenImageColor(width, height, color)
     }
     
+    // TODO: Drecrated. Use GenImageGradientLinear
     /// Generate image: vertical gradient
     @inlinable
     static func genImageGradientV(_ width: Int32, _ height: Int32, _ top: Color, _ bottom: Color) -> Image {
-        return RaylibC.GenImageGradientV(width, height, top, bottom)
+        return RaylibC.GenImageGradientLinear(width, height, 0, top, bottom)
     }
     
+    // TODO: Drecrated. Use GenImageGradientLinear
     /// Generate image: horizontal gradient
     @inlinable
     static func genImageGradientH(_ width: Int32, _ height: Int32, _ left: Color, _ right: Color) -> Image {
-        return RaylibC.GenImageGradientH(width, height, left, right)
+        return RaylibC.GenImageGradientLinear(width, height, 90, left, right) // TODO: Not sure about the angle
     }
+
+    /// Generate image: linear gradient, direction in degrees [0..360], 0=Vertical gradient
+    @inlinable
+    static func genImageGradientLinear(_ width: Int32, _ height: Int32, direction: Int32, _ start: Color, _ end: Color) -> Image {
+        return RaylibC.GenImageGradientLinear(width, height, direction, start, end)
+    } 
     
     /// Generate image: radial gradient
     @inlinable
@@ -130,10 +155,22 @@ public extension Raylib {
         return RaylibC.GenImageWhiteNoise(width, height, factor)
     }
 
+    /// Generate image: perlin noise
+    @inlinable
+    static func genImagePerlinNoise(_ width: Int32, _ height: Int32, _ offsetX: Int32, _ offsetY: Int32, _ scale: Float) -> Image {
+        return RaylibC.GenImagePerlinNoise(width, height, offsetX, offsetY, scale)
+    }
+
     /// Generate image: cellular algorithm, bigger tileSize means bigger cells
     @inlinable
     static func genImageCellular(_ width: Int32, _ height: Int32, _ tileSize: Int32) -> Image {
         return RaylibC.GenImageCellular(width, height, tileSize)
+    }
+
+    /// Generate image: grayscale image from text data
+    @inlinable
+    static func genImageText(_ width: Int32, _ height: Int32, _ text: String) -> Image {
+        return RaylibC.GenImageText(width, height, text)
     }
 }
 
@@ -150,6 +187,12 @@ public extension Raylib {
     @inlinable
     static func imageFromImage(_ image: Image, _ rec: Rectangle) -> Image {
         return RaylibC.ImageFromImage(image, rec)
+    }
+
+    /// Create an image from a selected channel of another image (GRAYSCALE)
+    @inlinable
+    static func ImageFromChannel(_ image: Image, _ selectedChannel: Int32) -> Image {
+        return RaylibC.ImageFromChannel(image, selectedChannel)
     }
     
     /// Create an image from text (default font)
@@ -209,7 +252,19 @@ public extension Raylib {
     static func imageAlphaPremultiply(_ image: inout Image) {
         RaylibC.ImageAlphaPremultiply(&image)
     }
+
+    /// Apply Gaussian blur using a box blur approximation
+    @inlinable
+    static func imageBlurGaussian(_ image: inout Image, _ blurSize: Int32) {
+        RaylibC.ImageBlurGaussian(&image, blurSize)
+    }                                            
     
+    /// Apply custom square convolution kernel to image
+    @inlinable
+    static func imageKernelConvolution(_ image: inout Image, _ kernel: inout Float, _ kernelSize: Int32) {
+        RaylibC.ImageKernelConvolution(&image, &kernel, kernelSize)
+    }
+
     /// Resize image (Bicubic scaling algorithm)
     @inlinable
     static func imageResize(_ image: inout Image, _ newWidth: Int32, _ newHeight: Int32) {
@@ -378,6 +433,12 @@ public extension Raylib {
     static func imageDrawLineV(_ dst: inout Image, _ start: Vector2, _ end: Vector2, _ color: Color) {
         RaylibC.ImageDrawLineV(&dst, start, end, color)
     }
+
+    /// Draw a line defining thickness within an image
+    @inlinable
+    static func imageDrawLineEx(_ dst: inout Image, _ start: Vector2, _ end: Vector2, _ thick: Int32, _ color: Color) {
+        RaylibC.ImageDrawLineEx(&dst, start, end, thick, color)
+    }
     
     /// Draw circle within an image
     @inlinable
@@ -391,6 +452,18 @@ public extension Raylib {
         RaylibC.ImageDrawCircleV(&dst, center, radius, color)
     }
     
+    /// Draw circle outline within an image
+    @inlinable
+    static func imageDrawCircleLines(_ dst: inout Image, _ centerX: Int32, _ centerY: Int32, _ radius: Int32, _ color: Color) {
+        RaylibC.ImageDrawCircleLines(&dst, centerX, centerY, radius, color)
+    }
+
+    /// Draw circle outline within an image (Vector version)
+    @inlinable
+    static func ImageDrawCircleLinesV(_ dst: inout Image, _ center: Vector2, _ radius: Int32, _ color: Color) {
+        RaylibC.ImageDrawCircleLinesV(&dst, center, radius, color)
+    }
+
     /// Draw rectangle within an image
     @inlinable
     static func imageDrawRectangle(_ dst: inout Image, _ posX: Int32, _ posY: Int32, _ width: Int32, _ height: Int32, _ color: Color) {
@@ -414,7 +487,39 @@ public extension Raylib {
     static func imageDrawRectangleLines(_ dst: inout Image, _ rec: Rectangle, _ thick: Int32, _ color: Color) {
         RaylibC.ImageDrawRectangleLines(&dst, rec, thick, color)
     }
+
+    /// Draw triangle within an image
+    @inlinable
+    static func imageDrawTriangle(_ dst: inout Image, _ v1: Vector2, _ v2: Vector2, _ v3: Vector2, _ color: Color) {
+        RaylibC.ImageDrawTriangle(&dst, v1, v2, v3, color)
+    }
     
+    /// Draw triangle with interpolated colors within an image
+    @inlinable
+    static func imageDrawTriangleEx(_ dst: inout Image, _ v1: Vector2, _ v2: Vector2, _ v3: Vector2, _ c1: Color, _ c2: Color, _ c3: Color) {
+        RaylibC.ImageDrawTriangleEx(&dst, v1, v2, v3, c1, c2, c3)
+    }
+
+    /// Draw triangle outline within an image
+    @inlinable
+    static func imageDrawTriangleLines(_ dst: inout Image, _ v1: Vector2, _ v2: Vector2, _ v3: Vector2, _ color: Color) {
+        RaylibC.ImageDrawTriangleLines(&dst, v1, v2, v3, color)
+    }
+
+    /// Draw a triangle fan defined by points within an image (first vertex is the center)
+    @inlinable
+    static func imageDrawTriangleFan(_ dst: inout Image, _ points: [Vector2], _ pointCount: Int32, _ color: Color) {
+        var _points = points
+        RaylibC.ImageDrawTriangleFan(&dst, &_points, pointCount, color)
+    }
+
+    /// Draw a triangle strip defined by points within an image
+    @inlinable
+    static func imageDrawTriangleStrip(_ dst: inout Image, _ points: [Vector2], _ pointCount: Int32, _ color: Color) {
+        var _points = points
+        RaylibC.ImageDrawTriangleStrip(&dst, &_points, pointCount, color)
+    }
+
     /// Draw a source image within a destination image (tint applied to source)
     @inlinable
     static func imageDraw(_ dst: inout Image, _ src: Image, _ srcRec: Rectangle, _ dstRec: Rectangle, _ tint: Color) {
@@ -472,6 +577,17 @@ public extension Raylib {
     @inlinable
     static func unloadTexture(_ texture: Texture2D) {
         return RaylibC.UnloadTexture(texture)
+    }
+
+    /// Check if a render texture is valid (loaded in GPU)
+    @inlinable
+    static func isRenderTextureValid(_ target: RenderTexture2D) -> Bool {
+        let result = RaylibC.IsRenderTextureValid(target)
+#if os(Windows)
+        return result.rawValue != 0
+#else
+        return result
+#endif
     }
     
     /// Unload render texture from GPU memory (VRAM)
@@ -542,16 +658,18 @@ public extension Raylib {
         RaylibC.DrawTextureRec(texture, source, position, tint)
     }
     
+    // TODO: Deprecated
     /// Draw texture quad with tiling and offset parameters
     @inlinable
     static func drawTextureQuad(_ texture: Texture2D, _ tiling: Vector2, _ offset: Vector2, _ quad: Rectangle, _ tint: Color) {
-        RaylibC.DrawTextureQuad(texture, tiling, offset, quad, tint)
+        // RaylibC.DrawTextureQuad(texture, tiling, offset, quad, tint)
     }
     
+    // TODO: Deprecated
     /// Draw part of a texture (defined by a rectangle) with rotation and scale tiled into dest.
     @inlinable
     static func drawTextureTiled(_ texture: Texture2D, _ source: Rectangle, _ dest: Rectangle, _ origin: Vector2, _ rotation: Float, _ scale: Float, _ tint: Color) {
-        RaylibC.DrawTextureTiled(texture, source, dest, origin, rotation, scale, tint)
+        // RaylibC.DrawTextureTiled(texture, source, dest, origin, rotation, scale, tint)
     }
     
     /// Draw a part of a texture defined by a rectangle with 'pro' parameters
@@ -566,18 +684,30 @@ public extension Raylib {
         RaylibC.DrawTextureNPatch(texture, nPatchInfo, dest, origin, rotation, tint)
     }
     
+    // TODO: Deprecated
     /// Draw a textured polygon
     @inlinable
     static func drawTexturePoly(_ texture: Texture2D, _ center: Vector2, _ points: [Vector2], _ texcoords: [Vector2], _ tint: Color) {
         var _points = points
         var _texcoords = texcoords
-        RaylibC.DrawTexturePoly(texture, center, &_points, &_texcoords, Int32(points.count), tint)
+        // RaylibC.DrawTexturePoly(texture, center, &_points, &_texcoords, Int32(points.count), tint)
     }
 }
 
 
 //MARK: - Color/pixel related functions
 public extension Raylib {
+    /// Check if two colors are equal
+    @inlinable
+    static func colorIsEqual(_ col1: Color, _ col2: Color) -> Bool {
+        let result = RaylibC.ColorIsEqual(col1, col2)
+#if os(Windows)
+        return result.rawValue != 0 
+#else
+        return result
+#endif
+    }
+
     /// Get color with alpha applied, alpha goes from 0.0f to 1.0f
     @inlinable
     static func fade(_ color: Color, _ alpha: Float) -> Color {
@@ -612,7 +742,25 @@ public extension Raylib {
     static func colorFromHSV(_ hue: Float, _ saturation: Float, _ value: Float) -> Color {
         return RaylibC.ColorFromHSV(hue, saturation, value)
     }
+
+    /// Get color multiplied with another color
+    @inlinable
+    static func colorTint(_ color: Color, _ tint: Color) -> Color {
+        return RaylibC.ColorTint(color, tint)
+    }
+
+    /// Get color with brightness correction, brightness factor goes from -1.0f to 1.0f
+    @inlinable
+    static func colorBrightness(_ color: Color, _ factor: Float) -> Color {
+        return RaylibC.ColorBrightness(color, factor)
+    }
     
+    /// Get color with contrast correction, contrast values between -1.0f and 1.0f
+    @inlinable
+    static func ColorContrast(_ color: Color, _ contrast: Float) -> Color {
+        return RaylibC.ColorContrast(color, contrast)
+    }
+
     /// Get color with alpha applied, alpha goes from 0.0f to 1.0f
     @inlinable
     static func colorAlpha(_ color: Color, _ alpha: Float) -> Color {
@@ -625,6 +773,12 @@ public extension Raylib {
         return RaylibC.ColorAlphaBlend(dst, src, tint)
     }
     
+    /// Get color lerp interpolation between two colors, factor [0.0f..1.0f]
+    @inlinable
+    static func colorLerp(_ color1: Color, _ color2: Color, _ factor: Float) -> Color {
+        return RaylibC.ColorLerp(color1, color2, factor)
+    }
+
     /// Get Color structure from hexadecimal value
     @inlinable
     static func getColor(_ hexValue: UInt32) -> Color {

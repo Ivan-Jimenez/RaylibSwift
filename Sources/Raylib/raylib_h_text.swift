@@ -58,6 +58,17 @@ public extension Raylib {
             }
         }
     }
+
+    /// Check if a font is valid (font data loaded, WARNING: GPU texture not checked)
+    @inlinable
+    static func isFontValid(_ font: Font) -> Bool {
+        let result = RaylibC.IsFontValid(font)
+#if os(Windows)
+        return result.rawValue != 0
+#else
+        return result
+#endif
+    }
     
     /// Load font data for further use
     @inlinable
@@ -88,6 +99,17 @@ public extension Raylib {
     @inlinable
     static func unloadFont(_ font: Font) {
         RaylibC.UnloadFont(font)
+    }
+
+    // Export font as code file, returns true on success
+    @inlinable
+    static func exportFontAsCode(_ font: Font, _ fileName: String) -> Bool {
+        let result = RaylibC.ExportFontAsCode(font, fileName)
+#if os(Windows)
+        return result.rawValue
+#else
+        return result
+#endif
     }
 }
 
@@ -129,11 +151,23 @@ public extension Raylib {
     static func drawTextCodepoint(_ font: Font, _ codepoint: Int32, _ position: Vector2, _ fontSize: Float, _ tint: Color) {
         RaylibC.DrawTextCodepoint(font, codepoint, position, fontSize, tint)
     }
+
+    /// Draw multiple character (codepoint)
+    @inlinable
+    static func drawTextCodepoints(_ font: Font, _ codepoints: [Int32], _ codepointCount: Int32, _ position: Vector2, _ fontSize: Float, _ spacing: Float, _ tint: Color) {
+        RaylibC.DrawTextCodepoints(font, codepoints, codepointCount, position, fontSize, spacing, tint)
+    }
 }
 
 
 //MARK: - Text font info functions
 public extension Raylib {
+    /// Set vertical line spacing when drawing with line-breaks
+    @inlinable
+    static func setTextLineSpacing(_ spacing: Int32) {
+        RaylibC.SetTextLineSpacing(spacing)
+    }
+
     /// Measure string width for default font
     @inlinable
     static func measureText(_ text: String, _ fontSize: Int32) -> Int32 {

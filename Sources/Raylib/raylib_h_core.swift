@@ -143,6 +143,12 @@ public extension Raylib {
     static func toggleFullscreen() {
         RaylibC.ToggleFullscreen()
     }
+
+    /// Toggle window state: borderless windowed, resizes window to match monitor resolution
+    @inlinable
+    static func toggleBorderlessWindowed() {
+        RaylibC.ToggleBorderlessWindowed()
+    }
     
     /// Set window state: maximized, if resizable (only PLATFORM_DESKTOP)
     @inlinable
@@ -166,6 +172,12 @@ public extension Raylib {
     @inlinable
     static func setWindowIcon(_ image: Image) {
         RaylibC.SetWindowIcon(image)
+    }
+
+    /// Set icon for window (multiple images, RGBA 32bit)
+    @inlinable
+    static func setWindowIcons(_ images: UnsafeMutablePointer<Image>!, _ count: Int32) {
+        RaylibC.SetWindowIcons(images, count)
     }
     
     /// Set title for window (only PLATFORM_DESKTOP)
@@ -199,6 +211,18 @@ public extension Raylib {
     static func setWindowSize(_ width: Int32, _ height: Int32) {
         RaylibC.SetWindowSize(width, height)
     }
+
+    /// Set window opacity [0.0f..1.0f]
+    @inlinable
+    static func setWindowOpacity(_ opacity: Float) {
+        RaylibC.SetWindowOpacity(opacity)
+    }
+
+    /// Set window focused
+    @inlinable
+    static func setWindowFocused() {
+        RaylibC.SetWindowFocused()
+    }
     
     /// Get native window handle
     @inlinable
@@ -216,6 +240,18 @@ public extension Raylib {
     @inlinable
     static func getScreenHeight() -> Int32 {
         return RaylibC.GetScreenHeight()
+    }
+
+    /// Get current render width (it considers HiDPI)
+    @inlinable
+    static func getRenderWidth() -> Int32 {
+        return RaylibC.GetRenderWidth()
+    }
+
+    /// Get current render height (it considers HiDPI)
+    @inlinable
+    static func getRenderHeight() -> Int32 {
+        return RaylibC.GetRenderHeight()
     }
     
     /// Get number of connected monitors
@@ -295,6 +331,24 @@ public extension Raylib {
     static func getClipboardText() -> String {
         return String(cString: RaylibC.GetClipboardText())
     }
+
+    /// Get clipboard image content
+    @inlinable
+    static func getClipboardImage() -> Image {
+        return RaylibC.GetClipboardImage()
+    }
+
+    /// Enable waiting for events on EndDrawing(), no automatic event polling
+    @inlinable
+    static func enableEventWaiting() {
+        RaylibC.EnableEventWaiting()
+    }
+
+    /// Disable waiting for events on EndDrawing(), automatic events polling
+    @inlinable
+    static func disableEventWaiting() {
+        RaylibC.DisableEventWaiting()
+    }
 }
 
 
@@ -323,7 +377,7 @@ public extension Raylib {
     ///         By default EndDrawing() does this job: draws everything + SwapScreenBuffer() + manage frame timming + PollInputEvents()
     ///         To avoid that behaviour and control frame processes manually, enable in config.h: SUPPORT_CUSTOM_FRAME_CONTROL
     @inlinable
-    static func waitTime(_ ms: Float) {
+    static func waitTime(_ ms: Double) {
         RaylibC.WaitTime(ms)
     }
 }
@@ -524,6 +578,17 @@ public extension Raylib {
             }
         }
     }
+
+    /// Check if a shader is valid (loaded on GPU)
+    @inlinable
+    static func isShaderValid(_ shader: Shader) -> Bool {
+        let result = RaylibC.IsShaderValid(shader)
+#if os(Windows)
+        return result.rawValue != 0
+#else
+        return result
+#endif
+    }
     
     /// Get shader uniform location
     @inlinable
@@ -577,10 +642,16 @@ public extension Raylib {
 
 //MARK: - Screen-space-related functions
 public extension Raylib {
-    /// Get a ray trace from mouse position
+    /// Get a ray trace from screen position (i.e mouse)
     @inlinable
-    static func getMouseRay(_ mousePosition: Vector2, _ camera: Camera) -> Ray {
-        return RaylibC.GetMouseRay(mousePosition, camera)
+    static func getScreenToWorldRay(_ mousePosition: Vector2, _ camera: Camera) -> Ray {
+        return RaylibC.GetScreenToWorldRay(mousePosition, camera)
+    }
+
+    /// Get a ray trace from screen position (i.e mouse) in a viewport
+    @inlinable
+    static func getScreenToWorldRayEx(_ position: Vector2, _ camera: Camera, _ width: Int32, _ height: Int32) -> Ray {
+        return RaylibC.GetScreenToWorldRayEx(position, camera, width, height)
     }
     
     /// Get camera transform matrix (view matrix)
@@ -694,14 +765,14 @@ public extension Raylib {
     /// Internal memory allocator
     @available(*, deprecated, message: "Manipulating memory is not recommended in Swift.")
     @inlinable
-    static func memAlloc(_ size: Int32) -> UnsafeMutableRawPointer! {
+    static func memAlloc(_ size: UInt32) -> UnsafeMutableRawPointer! {
         return RaylibC.MemAlloc(size)
     }
     
     /// Internal memory reallocator
     @available(*, deprecated, message: "Manipulating memory is not recommended in Swift.")
     @inlinable
-    static func nemRealloc(_ ptr: UnsafeMutableRawPointer!, _ size: Int32) -> UnsafeMutableRawPointer! {
+    static func nemRealloc(_ ptr: UnsafeMutableRawPointer!, _ size: UInt32) -> UnsafeMutableRawPointer! {
         return RaylibC.MemRealloc(ptr, size)
     }
     
@@ -773,7 +844,7 @@ public extension Raylib {
     
     /// Save data to file from byte array (write), returns true on success
     @inlinable
-    static func saveFileData(_ fileName: String, _ data: UnsafeMutableRawPointer!, _ bytesToWrite: UInt32) -> Bool {
+    static func saveFileData(_ fileName: String, _ data: UnsafeMutableRawPointer!, _ bytesToWrite: Int32) -> Bool {
         return fileName.withCString { cString in
             let result = RaylibC.SaveFileData(cString, data, bytesToWrite)
 #if os(Windows)
@@ -782,6 +853,17 @@ public extension Raylib {
             return result
 #endif
         }
+    }
+
+    /// Export data to code (.h), returns true on success
+    @inlinable
+    static func exportDataAsCode(_ data: UnsafeMutablePointer<UInt8>!, _ dataSize: Int32, _ fileName: String) -> Bool {
+        let result = RaylibC.ExportDataAsCode(data, dataSize, fileName)
+#if os(Windows)
+        return result.rawValue != 0
+#else
+        return result
+#endif 
     }
     
     /// Load text data from file (read), returns a '\0' terminated string
@@ -857,6 +939,19 @@ public extension Raylib {
             }
         }
     }
+
+    /// Get file length in bytes (NOTE: GetFileSize() conflicts with windows.h)
+    @inlinable
+    static func getFileLength(_ fileName: String) -> Int32 {
+        return fileName.withCString { fileName in
+            let result = RaylibC.GetFileLength(fileName)
+#if os(Windows)
+            return result.rawValue != 0
+#else
+            return result
+#endif
+        }
+    }
     
     /// Get pointer to extension for a filename string (includes dot: `.png`)
     @inlinable
@@ -903,22 +998,61 @@ public extension Raylib {
     static func getWorkingDirectory() -> String {
         return String(cString: RaylibC.GetWorkingDirectory())
     }
+
+    /// Get the directory of the running application (uses static string)
+    @inlinable
+    static func getApplicationDirectory() -> String {
+        return String(cString: RaylibC.GetApplicationDirectory())
+    }
+
+    /// Create directories (including full path requested), returns 0 on success
+    @inlinable
+    static func makeDirectory(_ dirPath: String) -> Int32 {
+        return dirPath.withCString { dirPath in
+            return RaylibC.MakeDirectory(dirPath)
+        }
+    } 
     
+    // TODO: Dreprecated
     /// Get filenames in a directory path (memory should be freed)
     @inlinable
     static func getDirectoryFiles(_ dirPath: String) -> [String] {
         return dirPath.withCString { cString in
-            var count: Int32 = 0
-            let result = RaylibC.GetDirectoryFiles(cString, &count)
-            let buffer = UnsafeMutableBufferPointer(start: result, count: Int(count))
+            let result = RaylibC.LoadDirectoryFiles(cString)
+            let buffer = UnsafeMutableBufferPointer(start: result.paths, count: Int(result.count))
             return buffer.compactMap({$0}).map({String(cString: $0)})
         }
     }
+
+    /// Load directory filepaths
+    @inlinable
+    static func loadDirectoryFiles(_ dirPath: String) -> FilePathList {
+        return dirPath.withCString { cDirPath in
+            return RaylibC.LoadDirectoryFiles(cDirPath)
+        }
+    }
+
+    /// Load directory filepaths with extension filtering and recursive directory scan. Use 'DIR' in the filter string to include directories in the result
+    @inlinable
+    static func loadDirectoryFilesEx(_ basePath: String, _ filter: String, _ scanSubdirs: Bool) -> FilePathList {
+        return basePath.withCString { cBasePath in
+            return filter.withCString { cFilter in
+                return RaylibC.LoadDirectoryFilesEx(cBasePath, cFilter, scanSubdirs)
+            }
+        }
+    }
     
+    // TODO: Dreprecated
     /// Clear directory files paths buffers (free memory)
     @inlinable
     static func clearDirectoryFiles() {
-        RaylibC.ClearDirectoryFiles()
+        // RaylibC.ClearDirectoryFiles()
+    }
+
+    /// Unload filepaths
+    @inlinable
+    static func unloadDirectoryFiles(_ files: FilePathList) {
+        RaylibC.UnloadDirectoryFiles(files)
     }
     
     /// Change working directory, return true on success
@@ -933,7 +1067,33 @@ public extension Raylib {
 #endif
         }
     }
+
+    /// Check if a given path is a file or a directory
+    @inlinable
+    static func isPathFile(_ path: String) -> Bool {
+        return path.withCString { path in
+            let result = RaylibC.IsPathFile(path)
+#if os (Windows)
+            return result.rawValue != 0
+#else
+            return result
+#endif
+        }
+    }
     
+    /// Check if fileName is valid for the platform/OS
+    @inlinable
+    static func isFileNameValid(_ fileName: String) -> Bool {
+        return fileName.withCString { path in
+            let result = RaylibC.IsPathFile(path)
+#if os (Windows)
+            return result.rawValue != 0
+#else
+            return result
+#endif
+        }
+    }
+
     /// Check if a file has been dropped into window
     @inlinable
     static var isFileDropped: Bool {
@@ -945,19 +1105,32 @@ public extension Raylib {
 #endif
     }
     
+    // TODO: Deprecated
     /// Get dropped files names (memory should be freed)
     @inlinable
     static func getDroppedFiles() -> [String] {
-        var count: Int32 = 0
-        let result = RaylibC.GetDroppedFiles(&count)
-        let buffer = UnsafeMutableBufferPointer(start: result, count: Int(count))
+        let result = RaylibC.LoadDroppedFiles()
+        let buffer = UnsafeMutableBufferPointer(start: result.paths, count: Int(result.count))
         return buffer.compactMap({$0}).map({String(cString: $0)})
     }
+
+    /// Load dropped filepaths
+    @inlinable
+    static func loadDroppedFiles() -> FilePathList {
+        return RaylibC.LoadDroppedFiles()
+    }
     
+    // TODO: Deprected
     /// Clear dropped files paths buffer (free memory)
     @inlinable
     static func clearDroppedFiles() {
-        RaylibC.ClearDroppedFiles()
+        // RaylibC.ClearDroppedFiles()
+    }
+
+    /// Unload dropped filepaths
+    @inlinable
+    static func unloadDroppedFiles(_ files: FilePathList) {
+        RaylibC.UnloadDroppedFiles(files)
     }
     
     /// Get file modification time (last write time)
@@ -995,14 +1168,38 @@ public extension Raylib {
     static func decodeDataBase64(_ data: UnsafeMutablePointer<UInt8>, _ outputLength: UnsafeMutablePointer<Int32>) -> UnsafeMutablePointer<UInt8> {
         return RaylibC.DecodeDataBase64(data, outputLength)
     }
+
+    /// Compute CRC32 hash code
+    @inlinable
+    static func computeCRC32(_ data: UnsafeMutablePointer<UInt8>!, _ dataSize: Int32) -> UInt32 {
+        return RaylibC.ComputeCRC32(data, dataSize)
+    }
+
+    /// Compute MD5 hash code, returns static int[4] (16 bytes)
+    @inlinable
+    static func computeMD5(_ data: UnsafeMutablePointer<UInt8>!, _ dataSize: Int32) -> [UInt32] {
+        let result = RaylibC.ComputeMD5(data, dataSize)
+        let buffer = UnsafeMutableBufferPointer(start: result, count: 4)
+        return Array(buffer)
+    }
+
+    /// Compute SHA1 hash code, returns static int[5] (20 bytes)
+    @inlinable
+    static func computeSHA1(_ data: UnsafeMutablePointer<UInt8>!, _ dataSize: Int32) -> [UInt32] {
+        let result = RaylibC.ComputeSHA1(data, dataSize)
+        let buffer = UnsafeMutableBufferPointer(start: result, count: 5)
+        return Array(buffer)
+    }
 }
 
 //MARK: - Persistent storage management
 public extension Raylib {
+    // TODO: Dreprecated
     /// Save integer value to storage file (to defined position), returns true on success
     @inlinable
     static func saveStorageValue(_ position: UInt32, _ value: Int32) -> Bool {
-        let result = RaylibC.SaveStorageValue(position, value)
+        // let result = RaylibC.SaveStorageValue(position, value)
+        let result = false
 #if os(Windows)
         return result.rawValue != 0
 #else
@@ -1010,10 +1207,12 @@ public extension Raylib {
 #endif
     }
     
+    // TODO: Deprecated
     /// Load integer value from storage file (from defined position)
     @inlinable
     static func loadStorageValue(_ position: UInt32) -> Int32 {
-        return RaylibC.LoadStorageValue(position)
+        // return RaylibC.LoadStorageValue(position)
+        -1
     }
     
     /// Open URL with default system browser (if available)
@@ -1025,6 +1224,63 @@ public extension Raylib {
     }
 }
 
+// MARK: - Automation events functionality
+public extension Raylib {
+    /// Load automation events list from file, NULL for empty list, capacity = MAX_AUTOMATION_EVENTS
+    @inlinable
+    static func loadAutomationEventList(_ fileName: String) -> AutomationEventList {
+        return fileName.withCString { cFileName in
+            return RaylibC.LoadAutomationEventList(cFileName)
+        }
+    }
+
+    /// Unload automation events list from file
+    @inlinable
+    static func unloadAutomationEventList(_ list: AutomationEventList) {
+        RaylibC.UnloadAutomationEventList(list)
+    }
+
+    /// Unload automation events list from file
+    @inlinable
+    static func exportAutomationEventList(_ list: AutomationEventList, _ fileName: String) -> Bool {
+        let result = RaylibC.ExportAutomationEventList(list, fileName)
+#if os(Windows)
+        return result.rawValue != 0
+#else
+        return result 
+#endif
+    }
+
+    /// Set automation event list to record to
+    @inlinable 
+    static func setAutomationEventList(_ list: UnsafeMutablePointer<AutomationEventList>!) {
+        RaylibC.SetAutomationEventList(list)
+    }
+
+    /// Set automation event internal base frame to start recording
+    @inlinable
+    static func setAutomationEventBaseFrame(_ frame: Int32) {
+        RaylibC.SetAutomationEventBaseFrame(frame)
+    }
+
+    /// Start recording automation events (AutomationEventList must be set)
+    @inlinable
+    static func startAutomationEventRecording() {
+        RaylibC.StartAutomationEventRecording()
+    }
+
+    /// Stop recording automation events
+    @inlinable
+    static func stopAutomationEventRecording() {
+        RaylibC.StopAutomationEventRecording()
+    }
+
+    /// Play a recorded automation event
+    @inlinable
+    static func playAutomationEvent(_ event: AutomationEvent) {
+        RaylibC.PlayAutomationEvent(event)
+    }
+}
 
 
 //------------------------------------------------------------------------------------
@@ -1188,6 +1444,12 @@ public extension Raylib {
             return RaylibC.SetGamepadMappings(cString) != 0
         }
     }
+
+    /// Set gamepad vibration for both motors (duration in seconds)
+    @inlinable
+    static func setGamepadVibration(_ gamepad: Int32, _ leftMotor: Float, _ rightMotor: Float, _ duration: Float) {
+        RaylibC.SetGamepadVibration(gamepad, leftMotor, rightMotor, duration)
+    }
 }
 
 
@@ -1254,6 +1516,12 @@ public extension Raylib {
     static func getMousePosition() -> Vector2 {
         return RaylibC.GetMousePosition()
     }
+
+    /// Get mouse delta between frames
+    @inlinable
+    static func getMouseDelta() -> Vector2 {
+        return RaylibC.GetMouseDelta()
+    }
     
     /// Set mouse position XY
     @inlinable
@@ -1277,6 +1545,12 @@ public extension Raylib {
     @inlinable
     static func getMouseWheelMove() -> Float {
         return RaylibC.GetMouseWheelMove()
+    }
+
+    /// Get mouse wheel movement for both X and Y
+    @inlinable
+    static func getMouseWheelMoveV() -> Vector2 {
+        return RaylibC.GetMouseWheelMoveV()
     }
     
     /// Set mouse cursor

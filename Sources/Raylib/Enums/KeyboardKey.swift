@@ -9,7 +9,7 @@
 // Keyboard keys (US keyboard layout)
 // NOTE: Use GetKeyPressed() to allow redefining
 // required keys for alternative layouts
-public enum KeyboardKey: Int32 {
+public enum KeyboardKey: Int32, Sendable {
     case null           = 0
     // Alphanumeric keys
     case apostrophe     = 39

@@ -32,7 +32,7 @@ public extension Raylib {
     /// Get latest detected gesture
     @inlinable
     static func getGestureDetected() -> Gestures {
-        return Gestures(rawValue: RaylibC.GetGestureDetected())
+        return Gestures(rawValue: UInt32(RaylibC.GetGestureDetected()))
     }
 
     /// Get gesture hold time in milliseconds

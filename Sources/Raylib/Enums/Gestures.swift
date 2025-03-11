@@ -8,8 +8,8 @@
 
 // Gestures
 // NOTE: It could be used as flags to enable only some gestures
-public struct Gestures: OptionSet, Equatable, RawRepresentable {
-    public let rawValue: Int32
+public struct Gestures: OptionSet, Equatable, RawRepresentable, Sendable {
+    public let rawValue: UInt32
     
     public static let none          = Gestures(0)
     public static let tap           = Gestures(1)
@@ -23,10 +23,10 @@ public struct Gestures: OptionSet, Equatable, RawRepresentable {
     public static let pinchIn       = Gestures(256)
     public static let pinchOut      = Gestures(512)
     
-    public init(_ rawValue: Int32) {
+    public init(_ rawValue: UInt32) {
         self.rawValue = rawValue
     }
-    public init(rawValue: Int32) {
+    public init(rawValue: UInt32) {
         self.rawValue = rawValue
     }
 }
