@@ -88,7 +88,7 @@ public extension Raylib {
     @available(*, deprecated, renamed: "genMeshBinormals()")
     @inlinable
     static func meshBinormals(_ mesh: inout Mesh) {
-        RaylibC.GenMeshBinormals(&mesh)
+        // RaylibC.GenMeshBinormals(&mesh)
     }
     
     /// Detect collision between ray and sphere
@@ -123,14 +123,7 @@ public extension Raylib {
 
 
 //MARK: - TextureLoadingAndDrawing.swift
-public extension Raylib {
-    /// Generate image: perlin noise
-    @available(*, unavailable, message: "Removed in Raylib 4.0")
-    @inlinable
-    static func genImagePerlinNoise(_ width: Int32, _ height: Int32, _ offsetX: Int32, _ offsetY: Int32, _ scale: Float) -> Image {
-        fatalError()
-    }
-    
+public extension Raylib {    
     /// Get pixel data from GPU texture and return an Image
     @available(*, unavailable, message: "Removed in Raylib 4.0")
     @inlinable
