@@ -39,5 +39,5 @@
 
 // Raylib.closeWindow()
 
-let game = Camera2DPlatformer()
+let game = Core3DCameraSplitScreen()
 game.run()

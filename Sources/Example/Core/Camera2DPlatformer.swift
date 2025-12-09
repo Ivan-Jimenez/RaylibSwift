@@ -5,7 +5,7 @@
  *
  */
 
-/* Based on raysan5's original example https://github.com/raysan5/raylib/blob/master/examples/core/core_2d_camera_platformer.c */
+/* Raylib's original example https://github.com/raysan5/raylib/blob/master/examples/core/core_2d_camera_platformer.c */
 
 import Raylib
 
