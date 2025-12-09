@@ -244,9 +244,6 @@ public extension Raylib {
     /// Upload mesh vertex data in GPU and provide VAO/VBO ids
     @inlinable
     static func uploadMesh(_ mesh: inout Mesh, _ dynamic: Bool) {
-#if os(Windows)
-        let dynamic = bool(dynamic ? 1 : 0)
-#endif
         RaylibC.UploadMesh(&mesh, dynamic)
     }
     
@@ -280,11 +277,7 @@ public extension Raylib {
     static func exportMesh(_ mesh: Mesh, _ fileName: String) -> Bool {
         return fileName.withCString { cStirng in
             let result = RaylibC.ExportMesh(mesh, cStirng)
-#if os(Windows)
-            return result.rawValue != 0
-#else
             return result
-#endif
         }
     }
 
@@ -292,11 +285,7 @@ public extension Raylib {
     @inlinable
     static func exportMeshAsCode(_ mesh: Mesh, _ fileName: String) -> Bool {
         let result = RaylibC.ExportMeshAsCode(mesh, fileName)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Compute mesh bounding box limits
@@ -405,11 +394,7 @@ public extension Raylib {
     @inlinable
     static func isMaterialValid(_ material: Material) -> Bool {
         let result = RaylibC.IsMaterialValid(material)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Unload material from GPU memory (VRAM)
@@ -473,11 +458,7 @@ public extension Raylib {
     @inlinable
     static func isModelAnimationValid(_ model: Model, _ anim: ModelAnimation) -> Bool {
         let result = RaylibC.IsModelAnimationValid(model, anim)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
 }
 
@@ -487,33 +468,21 @@ public extension Raylib {
     @inlinable
     static func checkCollisionSpheres(_ center1: Vector3, _ radius1: Float, _ center2: Vector3, _ radius2: Float) -> Bool {
         let result = RaylibC.CheckCollisionSpheres(center1, radius1, center2, radius2)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check collision between two bounding boxes
     @inlinable
     static func checkCollisionBoxes(_ box1: BoundingBox, _ box2: BoundingBox) -> Bool {
         let result = RaylibC.CheckCollisionBoxes(box1, box2)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check collision between box and sphere
     @inlinable
     static func checkCollisionBoxSphere(_ box: BoundingBox, _ center: Vector3, _ radius: Float) -> Bool {
         let result = RaylibC.CheckCollisionBoxSphere(box, center, radius)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Get collision info between ray and sphere

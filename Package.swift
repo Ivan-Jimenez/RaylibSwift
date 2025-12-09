@@ -15,7 +15,7 @@ let package = Package(
             name: "RaylibC",
             path: "Sources/RaylibC/raylib-5.5/src",
             exclude: [
-                "qt", 
+                "raylib.ico",
                 "minshell.html", 
                 "shell.html", 
                 "raylib.rc", 
@@ -42,6 +42,7 @@ let package = Package(
                 .define("PLATFORM_DESKTOP"),
                 .define("GRAPHICS_API_OPENGL_33"),
                 .define("_GLFW_X11", .when(platforms: [.linux])),
+                .define("_GLFW_WIN32", .when(platforms: [.windows])),
             ],
             linkerSettings: [
                 .linkedLibrary("GL", .when(platforms: [.linux])),
@@ -50,6 +51,10 @@ let package = Package(
                 .linkedLibrary("dl", .when(platforms: [.linux])),
                 .linkedLibrary("rt", .when(platforms: [.linux])),
                 .linkedLibrary("X11", .when(platforms: [.linux])),
+                .linkedLibrary("winmm", .when(platforms: [.windows])),
+                .linkedLibrary("gdi32", .when(platforms: [.windows])),
+                .linkedLibrary("opengl32", .when(platforms: [.windows])),
+                .linkedLibrary("shell32", .when(platforms: [.windows])),
             ]
         ),
     ]

@@ -28,12 +28,7 @@ public extension Raylib {
     /// Check if audio device has been initialized successfully
     @inlinable
     static var isAudioDeviceReady: Bool {
-        let result = RaylibC.IsAudioDeviceReady()
-#if os(Windows)
-        return result.rawValue != 0
-#else
-        return result
-#endif
+        RaylibC.IsAudioDeviceReady()
     }
 
     /// Set master volume (listener)
@@ -127,12 +122,7 @@ public extension Raylib {
     @inlinable
     static func exportWave(_ wave: Wave, _ fileName: String) -> Bool {
         return fileName.withCString { cString in
-            let result = RaylibC.ExportWave(wave, cString)
-#if os(Windows)
-            return result.rawValue != 0
-#else
-            return result
-#endif
+            RaylibC.ExportWave(wave, cString)
         }
     }
 
@@ -140,12 +130,7 @@ public extension Raylib {
     @inlinable
     static func exportWaveAsCode(_ wave: Wave, _ fileName: String) -> Bool {
         return fileName.withCString { cString in
-            let result = RaylibC.ExportWaveAsCode(wave, cString)
-#if os(Windows)
-            return result.rawValue != 0
-#else
-            return result
-#endif
+            RaylibC.ExportWaveAsCode(wave, cString)
         }
     }
 }
@@ -180,11 +165,7 @@ public extension Raylib {
     @inlinable
     static func isSoundPlaying(_ sound: Sound) -> Bool {
         let result = RaylibC.IsSoundPlaying(sound)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
 
     /// Set volume for a sound (1.0 is max level)
@@ -263,11 +244,7 @@ public extension Raylib {
     @inlinable
     static func isMusicValid(_ music: Music) -> Bool {
         let result = RaylibC.IsMusicValid(music)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
 
     /// Unload music stream
@@ -286,11 +263,7 @@ public extension Raylib {
     @inlinable
     static func isMusicStreamPlaying(_ music: Music) -> Bool {
         let result = RaylibC.IsMusicStreamPlaying(music)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
 
     /// Updates buffers for music streaming
@@ -366,11 +339,7 @@ public extension Raylib {
     @inlinable
     static func isAudioStreamValid(_ stream: AudioStream) -> Bool {
         let result = RaylibC.IsAudioStreamValid(stream)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
 
     /// Unload audio stream and free memory
@@ -388,12 +357,7 @@ public extension Raylib {
     /// Check if any audio stream buffers requires refill
     @inlinable
     static func isAudioStreamProcessed(_ stream: AudioStream) -> Bool {
-        let result = RaylibC.IsAudioStreamPlaying(stream)
-#if os(Windows)
-        return result.rawValue != 0
-#else
-        return result
-#endif
+        RaylibC.IsAudioStreamPlaying(stream)
     }
 
     /// Play audio stream
@@ -417,12 +381,7 @@ public extension Raylib {
     /// Check if audio stream is playing
     @inlinable
     static func isAudioStreamPlaying(_ stream: AudioStream) -> Bool {
-        let result = RaylibC.IsAudioStreamPlaying(stream)
-#if os(Windows)
-        return result.rawValue != 0
-#else
-        return result
-#endif
+        RaylibC.IsAudioStreamPlaying(stream)
     }
 
     /// Stop audio stream

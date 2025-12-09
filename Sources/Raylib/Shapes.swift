@@ -376,77 +376,49 @@ public extension Raylib {
     @inlinable
     static func checkCollisionRecs(_ rec1: Rectangle, _ rec2: Rectangle) -> Bool {
         let result = RaylibC.CheckCollisionRecs(rec1, rec2)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check collision between two circles
     @inlinable
     static func checkCollisionCircles(_ center1: Vector2, _ radius1: Float, _ center2: Vector2, _ radius2: Float) -> Bool {
         let result = RaylibC.CheckCollisionCircles(center1, radius1, center2, radius2)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check collision between circle and rectangle
     @inlinable
     static func checkCollisionCircleRec(_ center: Vector2, _ radius: Float, _ rec: Rectangle) -> Bool {
         let result = RaylibC.CheckCollisionCircleRec(center, radius, rec)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
 
     // Check if circle collides with a line created betweeen two points [p1] and [p2]
     @inlinable
     static func checkCollisionCircleLine(_ center: Vector2, _ radius: Float, _ p1: Vector2, _ p2: Vector2) -> Bool {
         let result = RaylibC.CheckCollisionCircleLine(center, radius, p1, p2)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if point is inside rectangle
     @inlinable
     static func checkCollisionPointRec(_ point: Vector2, _ rec: Rectangle) -> Bool {
         let result = RaylibC.CheckCollisionPointRec(point, rec)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if point is inside circle
     @inlinable
     static func checkCollisionPointCircle(_ point: Vector2, _ center: Vector2, _ radius: Float) -> Bool {
         let result = RaylibC.CheckCollisionPointCircle(point, center, radius)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if point is inside a triangle
     @inlinable
     static func checkCollisionPointTriangle(_ point: Vector2, _ p1: Vector2, _ p2: Vector2, _ p3: Vector2) -> Bool {
         let result = RaylibC.CheckCollisionPointTriangle(point, p1, p2, p3)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check the collision between two lines defined by two points each, returns collision point by reference
@@ -454,15 +426,9 @@ public extension Raylib {
     static func checkCollisionLines(_ startPos1: Vector2, _ endPos1: Vector2, _ startPos2: Vector2, _ endPos2: Vector2) -> Vector2? {
         var collisionPoint = Vector2()
         let result = RaylibC.CheckCollisionLines(startPos1, endPos1, startPos2, endPos2, &collisionPoint)
-#if os(Windows)
-        if result.rawValue != 0 {
-            return collisionPoint
-        }
-#else
         if result {
             return collisionPoint
         }
-#endif
         return nil
     }
     
@@ -470,11 +436,7 @@ public extension Raylib {
     @inlinable
     static func checkCollisionPointLine(_ point: Vector2, _ p1: Vector2, _ p2: Vector2, _ threshold: Int32) -> Bool {
         let result = RaylibC.CheckCollisionPointLine(point, p1, p2, threshold)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
 
     /// Check if point is within a polygon described by array of vertices
@@ -482,11 +444,7 @@ public extension Raylib {
     static func checkCollisionPointPoly(_ point: Vector2, _ points: [Vector2], _ pointCount: Int32) -> Bool {
         var _points = points
         let result = RaylibC.CheckCollisionPointPoly(point, &_points, pointCount)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Get collision rectangle for two rectangles collision

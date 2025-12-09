@@ -62,11 +62,7 @@ public extension Raylib {
     @inlinable
     static func isImageValid(_ image: Image) -> Bool {
         let result = RaylibC.IsImageValid(image)
-#if os(Windows)
-        return result.rawValue != 0
-#else 
         return result
-#endif
     }
     
     /// Unload image from CPU memory (RAM)
@@ -80,11 +76,7 @@ public extension Raylib {
     static func exportImage(_ image: Image, _ fileName: String) -> Bool {
         return fileName.withCString { cString in
             let result = RaylibC.ExportImage(image, cString)
-#if os(Windows)
-            return result.rawValue != 0
-#else
             return result
-#endif
         }
     }
     
@@ -99,11 +91,7 @@ public extension Raylib {
     static func exportImageAsCode(_ image: Image, _ fileName: String) -> Bool {
         return fileName.withCString { cString in
             let result = RaylibC.ExportImageAsCode(image, cString)
-#if os(Windows)
-            return result.rawValue != 0
-#else
             return result
-#endif
         }
     }
 }
@@ -569,11 +557,7 @@ public extension Raylib {
     @inlinable
     static func isRenderTextureValid(_ target: RenderTexture2D) -> Bool {
         let result = RaylibC.IsRenderTextureValid(target)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Unload render texture from GPU memory (VRAM)
@@ -664,11 +648,7 @@ public extension Raylib {
     @inlinable
     static func colorIsEqual(_ col1: Color, _ col2: Color) -> Bool {
         let result = RaylibC.ColorIsEqual(col1, col2)
-#if os(Windows)
-        return result.rawValue != 0 
-#else
         return result
-#endif
     }
 
     /// Get color with alpha applied, alpha goes from 0.0f to 1.0f

@@ -25,11 +25,7 @@ public extension Raylib {
     @inlinable
     static var windowShouldClose: Bool {
         let result = RaylibC.WindowShouldClose()
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Close window and unload OpenGL context
@@ -42,88 +38,55 @@ public extension Raylib {
     @inlinable
     static var isWindowReady: Bool {
         let result = RaylibC.IsWindowReady()
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if window is currently fullscreen
     @inlinable
     static var isWindowFullscreen: Bool {
         let result = RaylibC.IsWindowFullscreen()
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if window is currently hidden (only PLATFORM_DESKTOP)
     @inlinable
     static var isWindowHidden: Bool {
         let result = RaylibC.IsWindowHidden()
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if window is currently minimized (only PLATFORM_DESKTOP)
     @inlinable
     static var isWindowMinimized: Bool {
         let result = RaylibC.IsWindowMinimized()
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if window is currently maximized (only PLATFORM_DESKTOP)
     @inlinable
     static var isWindowMaximized: Bool {
         let result = RaylibC.IsWindowMaximized()
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if window is currently focused (only PLATFORM_DESKTOP)
     @inlinable
     static var isWindowFocused: Bool {
         let result = RaylibC.IsWindowFocused()
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if window has been resized last frame
     @inlinable
     static var isWindowResized: Bool {
         let result = RaylibC.IsWindowResized()
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if one specific window flag is enabled
     @inlinable
     static func isWindowState(_ flag: ConfigFlags) -> Bool {
-        let result = RaylibC.IsWindowState(flag.rawValue)
-#if os(Windows)
-        return result.rawValue != 0
-#else
-        return result
-#endif
+        RaylibC.IsWindowState(flag.rawValue)
     }
     
     /// Set window configuration state using flags
@@ -401,11 +364,7 @@ public extension Raylib {
     @inlinable
     static var isCursorHidden: Bool {
         let result = RaylibC.IsCursorHidden()
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Enables cursor (unlock cursor)
@@ -424,11 +383,7 @@ public extension Raylib {
     @inlinable
     static var isCursorOnScreen: Bool {
         let result = RaylibC.IsCursorOnScreen()
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
 }
 
@@ -583,11 +538,7 @@ public extension Raylib {
     @inlinable
     static func isShaderValid(_ shader: Shader) -> Bool {
         let result = RaylibC.IsShaderValid(shader)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Get shader uniform location
@@ -847,11 +798,7 @@ public extension Raylib {
     static func saveFileData(_ fileName: String, _ data: UnsafeMutableRawPointer!, _ bytesToWrite: Int32) -> Bool {
         return fileName.withCString { cString in
             let result = RaylibC.SaveFileData(cString, data, bytesToWrite)
-#if os(Windows)
-            return result.rawValue != 0
-#else
             return result
-#endif
         }
     }
 
@@ -859,11 +806,7 @@ public extension Raylib {
     @inlinable
     static func exportDataAsCode(_ data: UnsafeMutablePointer<UInt8>!, _ dataSize: Int32, _ fileName: String) -> Bool {
         let result = RaylibC.ExportDataAsCode(data, dataSize, fileName)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif 
     }
     
     /// Load text data from file (read), returns a '\0' terminated string
@@ -890,11 +833,7 @@ public extension Raylib {
             var _text = text.utf8CString
             return _text.withUnsafeMutableBufferPointer { textCString in
                 let result = RaylibC.SaveFileText(fileCString, textCString.baseAddress)
-#if os(Windows)
-                return result.rawValue != 0
-#else
                 return result
-#endif
             }
         }
     }
@@ -904,11 +843,7 @@ public extension Raylib {
     static func fileExists(_ fileName: String) -> Bool {
         return fileName.withCString { cString in
             let result = RaylibC.FileExists(cString)
-#if os(Windows)
-            return result.rawValue != 0
-#else
             return result
-#endif
         }
     }
     
@@ -917,11 +852,7 @@ public extension Raylib {
     static func directoryExists(_ dirPath: String) -> Bool {
         return dirPath.withCString { cString in
             let result = RaylibC.DirectoryExists(cString)
-#if os(Windows)
-            return result.rawValue != 0
-#else
             return result
-#endif
         }
     }
     
@@ -931,11 +862,7 @@ public extension Raylib {
         return fileName.withCString { fileCString in
             return ext.withCString { extCString in
                 let result = RaylibC.IsFileExtension(fileCString, extCString)
-#if os(Windows)
-                return result.rawValue != 0
-#else
                 return result
-#endif
             }
         }
     }
@@ -945,11 +872,7 @@ public extension Raylib {
     static func getFileLength(_ fileName: String) -> Int32 {
         return fileName.withCString { fileName in
             let result = RaylibC.GetFileLength(fileName)
-#if os(Windows)
-            return result.rawValue != 0
-#else
             return result
-#endif
         }
     }
     
@@ -1042,11 +965,7 @@ public extension Raylib {
     static func changeDirectory(_ dir: String) -> Bool {
         return dir.withCString { cString in
             let result = RaylibC.ChangeDirectory(cString)
-#if os(Windows)
-            return result.rawValue != 0
-#else
             return result
-#endif
         }
     }
 
@@ -1055,11 +974,7 @@ public extension Raylib {
     static func isPathFile(_ path: String) -> Bool {
         return path.withCString { path in
             let result = RaylibC.IsPathFile(path)
-#if os (Windows)
-            return result.rawValue != 0
-#else
             return result
-#endif
         }
     }
     
@@ -1068,11 +983,7 @@ public extension Raylib {
     static func isFileNameValid(_ fileName: String) -> Bool {
         return fileName.withCString { path in
             let result = RaylibC.IsPathFile(path)
-#if os (Windows)
-            return result.rawValue != 0
-#else
             return result
-#endif
         }
     }
 
@@ -1080,11 +991,7 @@ public extension Raylib {
     @inlinable
     static var isFileDropped: Bool {
         let result = RaylibC.IsFileDropped()
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
 
     /// Load dropped filepaths
@@ -1189,11 +1096,7 @@ public extension Raylib {
     @inlinable
     static func exportAutomationEventList(_ list: AutomationEventList, _ fileName: String) -> Bool {
         let result = RaylibC.ExportAutomationEventList(list, fileName)
-#if os(Windows)
-        return result.rawValue != 0
-#else
-        return result 
-#endif
+        return result
     }
 
     /// Set automation event list to record to
@@ -1237,44 +1140,28 @@ public extension Raylib {
     @inlinable
     static func isKeyPressed(_ key: KeyboardKey) -> Bool {
         let result = RaylibC.IsKeyPressed(key.rawValue)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if a key is being pressed
     @inlinable
     static func isKeyDown(_ key: KeyboardKey) -> Bool {
         let result = RaylibC.IsKeyDown(key.rawValue)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if a key has been released once
     @inlinable
     static func isKeyReleased(_ key: KeyboardKey) -> Bool {
         let result = RaylibC.IsKeyReleased(key.rawValue)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if a key is NOT being pressed
     @inlinable
     static func isKeyUp(_ key: KeyboardKey) -> Bool {
         let result = RaylibC.IsKeyUp(key.rawValue)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Set a custom key to exit program (default is ESC)
@@ -1307,11 +1194,7 @@ public extension Raylib {
     @inlinable
     static func isGamepadAvailable(_ gamepad: Int32) -> Bool {
         let result = RaylibC.IsGamepadAvailable(gamepad)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Get gamepad internal name id
@@ -1324,44 +1207,28 @@ public extension Raylib {
     @inlinable
     static func isGamepadButtonPressed(_ gamepad: Int32, _ button: GamepadButton) -> Bool {
         let result = RaylibC.IsGamepadButtonPressed(gamepad, button.rawValue)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if a gamepad button is being pressed
     @inlinable
     static func isGamepadButtonDown(_ gamepad: Int32, _ button: GamepadButton) -> Bool {
         let result = RaylibC.IsGamepadButtonDown(gamepad, button.rawValue)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if a gamepad button has been released once
     @inlinable
     static func isGamepadButtonReleased(_ gamepad: Int32, _ button: GamepadButton) -> Bool {
         let result = RaylibC.IsGamepadButtonReleased(gamepad, button.rawValue)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if a gamepad button is NOT being pressed
     @inlinable
     static func isGamepadButtonUp(_ gamepad: Int32, _ button: GamepadButton) -> Bool {
         let result = RaylibC.IsGamepadButtonUp(gamepad, button.rawValue)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Get the last gamepad button pressed
@@ -1404,44 +1271,28 @@ public extension Raylib {
     @inlinable
     static func isMouseButtonPressed(_ button: MouseButton) -> Bool {
         let result = RaylibC.IsMouseButtonPressed(button.rawValue)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if a mouse button is being pressed
     @inlinable
     static func isMouseButtonDown(_ button: MouseButton) -> Bool {
         let result = RaylibC.IsMouseButtonDown(button.rawValue)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if a mouse button has been released once
     @inlinable
     static func isMouseButtonReleased(_ button: MouseButton) -> Bool {
         let result = RaylibC.IsMouseButtonReleased(button.rawValue)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Check if a mouse button is NOT being pressed
     @inlinable
     static func isMouseButtonUp(_ button: MouseButton) -> Bool {
         let result = RaylibC.IsMouseButtonUp(button.rawValue)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Get mouse position X

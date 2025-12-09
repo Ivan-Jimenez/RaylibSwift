@@ -63,11 +63,7 @@ public extension Raylib {
     @inlinable
     static func isFontValid(_ font: Font) -> Bool {
         let result = RaylibC.IsFontValid(font)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Load font data for further use
@@ -105,11 +101,7 @@ public extension Raylib {
     @inlinable
     static func exportFontAsCode(_ font: Font, _ fileName: String) -> Bool {
         let result = RaylibC.ExportFontAsCode(font, fileName)
-#if os(Windows)
-        return result.rawValue
-#else
         return result
-#endif
     }
 }
 
@@ -268,11 +260,7 @@ public extension Raylib {
         return text1.withCString { text1CString in
             return text2.withCString { text2CString in
                 let result = RaylibC.TextIsEqual(text1CString, text2CString)
-#if os(Windows)
-                return result.rawValue != 0
-#else
                 return result
-#endif
             }
         }
     }

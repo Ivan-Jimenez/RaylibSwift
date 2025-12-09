@@ -96,11 +96,7 @@ public extension Raylib {
     @inlinable
     static func checkCollisionRaySphere(_ ray: Ray, _ center: Vector3, _ radius: Float) -> Bool {
         let result = RaylibC.GetRayCollisionSphere(ray, center, radius).hit
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Detect collision between ray and sphere, returns collision point
@@ -108,15 +104,9 @@ public extension Raylib {
     @inlinable
     static func checkCollisionRaySphereEx(_ ray: Ray, _ center: Vector3, _ radius: Float) -> Vector3? {
         let collision = RaylibC.GetRayCollisionSphere(ray, center, radius)
-#if os(Windows)
-        if collision.hit.rawValue != 0 {
-            return collision.point
-        }
-#else
         if collision.hit {
             return collision.point
         }
-#endif
         return nil
     }
 }
@@ -217,11 +207,7 @@ public extension Raylib {
     @inlinable
     static func isMusicPlaying(_ music: Music) -> Bool {
         let result = RaylibC.IsMusicStreamPlaying(music)
-#if os(Windows)
-        return result.rawValue != 0
-#else
         return result
-#endif
     }
     
     /// Init audio stream (to stream raw audio pcm data)
