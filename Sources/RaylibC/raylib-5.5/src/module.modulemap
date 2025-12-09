@@ -1,0 +1,7 @@
+module RaylibC {
+    header "raylib.h"
+    header "raymath.h"
+    header "rlgl.h"
+    header "rcamera.h"
+    export *
+}

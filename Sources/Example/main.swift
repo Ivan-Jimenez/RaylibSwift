@@ -39,5 +39,5 @@
 
 // Raylib.closeWindow()
 
-let game = Core3DCameraSplitScreen()
+let game = Core2DCameraMouseZoom()
 game.run()
