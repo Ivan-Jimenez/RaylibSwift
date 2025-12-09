@@ -12,4 +12,9 @@ module RaylibC {
         header "rlgl.h"
         export *
     }
+    
+    module rcamera {
+        header "rcamera.h"
+        export *
+    }
 }
