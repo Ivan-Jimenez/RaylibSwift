@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "Raylib",
+    name: "swift-raylib",
     products: [
         .library(name: "Raylib", targets: ["Raylib"]),
         .library(name: "RaylibC", targets: ["RaylibC"]),

@@ -1,12 +1,8 @@
 # Raylib for Swift
 <a href="https://swift.org"><img style="vertical-align:middle" src=https://developer.apple.com/swift/resources/images/swift_logo_color.svg width="50"></a><a href="https://www.raylib.com"><img style="vertical-align:middle" src=https://www.raylib.com/common/img/raylib_logo.png width="50"></a>
 
-[![Windows](https://github.com/Ivan-Jimenez/RaylibSwift/actions/workflows/Windows.yml/badge.svg?branch=master)](https://github.com/Ivan-Jimenez/RaylibSwift/actions/workflows/Windows.yml) [![macOS](https://github.com/Ivan-Jimenez/RaylibSwift/actions/workflows/macOS.yml/badge.svg?branch=master)](https://github.com/Ivan-Jimenez/RaylibSwift/actions/workflows/macOS.yml) [![Linux](https://github.com/Ivan-Jimenez/RaylibSwift/actions/workflows/Linux.yml/badge.svg?branch=master)](https://github.com/Ivan-Jimenez/RaylibSwift/actions/workflows/Linux.yml) 
+[![Windows](https://github.com/Ivan-Jimenez/swift-raylib/actions/workflows/Windows.yml/badge.svg?branch=master)](https://github.com/Ivan-Jimenez/swift-raylib/actions/workflows/Windows.yml) [![macOS](https://github.com/Ivan-Jimenez/swift-raylib/actions/workflows/macOS.yml/badge.svg?branch=master)](https://github.com/Ivan-Jimenez/swift-raylib/actions/workflows/macOS.yml) [![Linux](https://github.com/Ivan-Jimenez/swift-raylib/actions/workflows/Linux.yml/badge.svg?branch=master)](https://github.com/Ivan-Jimenez/swift-raylib/actions/workflows/Linux.yml) 
 
-[![Twitter](https://img.shields.io/twitter/follow/stregasgate?style=social)](https://twitter.com/stregasgate)
-[![YouTube](https://img.shields.io/youtube/channel/subscribers/UCBXFkK2B4w9856wBJfCGufg?label=Subscribe&style=social)](https://youtube.com/stregasgate)
-[![Reddit](https://img.shields.io/reddit/subreddit-subscribers/stregasgate?style=social)](https://www.reddit.com/r/stregasgate/)
-[![Discord](https://img.shields.io/discord/641809158051725322?label=Hang%20Out&logo=Discord&style=social)](https://discord.gg/5JdRJhD)
 
 This package brings [Raylib](https://www.raylib.com/) to [Swift](https://www.swift.org/).
 
@@ -30,7 +26,7 @@ $ swift package init --type executable
 **2.** Edit the newly created `Package.swift` to add Raylib to the dependencies array:
 
 ```swift
-.package(url: "https://github.com/Ivan-Jimenez/RaylibSwift.git", branch: "master")
+.package(url: "https://github.com/Ivan-Jimenez/swift-raylib.git", branch: "master")
 ```
 
 On Windows and macOS you only need Swift. For linux, see [install required libraries](https://github.com/raysan5/raylib/wiki/Working-on-GNU-Linux#install-required-libraries).
