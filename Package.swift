@@ -35,6 +35,7 @@ let package = Package(
                 "utils.c",
                 "raudio.c", 
                 "rglfw.c",
+                "rglfw.m",
             ],
             publicHeadersPath: ".",
             cSettings: [
@@ -43,6 +44,8 @@ let package = Package(
                 .define("GRAPHICS_API_OPENGL_33"),
                 .define("_GLFW_X11", .when(platforms: [.linux])),
                 .define("_GLFW_WIN32", .when(platforms: [.windows])),
+                .define("_GLFW_COCOA", .when(platforms: [.macOS])),
+                .unsafeFlags(["-fno-objc-arc"], .when(platforms: [.macOS])),
             ],
             linkerSettings: [
                 .linkedLibrary("GL", .when(platforms: [.linux])),
@@ -55,6 +58,13 @@ let package = Package(
                 .linkedLibrary("gdi32", .when(platforms: [.windows])),
                 .linkedLibrary("opengl32", .when(platforms: [.windows])),
                 .linkedLibrary("shell32", .when(platforms: [.windows])),
+                .linkedFramework("Cocoa", .when(platforms: [.macOS])),
+                .linkedFramework("IOKit", .when(platforms: [.macOS])),
+                .linkedFramework("CoreVideo", .when(platforms: [.macOS])),
+                .linkedFramework("OpenGL", .when(platforms: [.macOS])),
+                .linkedFramework("CoreFoundation", .when(platforms: [.macOS])),
+                .linkedFramework("CoreAudio", .when(platforms: [.macOS])),
+                .linkedFramework("AudioToolbox", .when(platforms: [.macOS])),
             ]
         ),
     ]
